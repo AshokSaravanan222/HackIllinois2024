@@ -6,30 +6,34 @@ import { api } from "./_generated/api";
 // See https://docs.convex.dev/functions for more.
 
 // You can read data from the database via a query:
-export const listNumbers = query({
+export const listOutfits = query({
   // Validators for arguments.
   args: {
     count: v.number(),
   },
 
-  // Query implementation.
+  // Function implementation.
   handler: async (ctx, args) => {
-    //// Read the database as many times as you need here.
-    //// See https://docs.convex.dev/database/reading-data.
-    const numbers = await ctx.db
-      .query("numbers")
-      // Ordered by _creationTime, return most recent
-      .order("desc")
-      .take(args.count);
-    return numbers.toReversed().map((number) => number.value);
+    // Read the database as many times as you need here.
+    // See https://docs.convex.dev/database/reading-data.
+    const documents = await ctx.db.query("outfits").collect();
+
+    // Arguments passed from the client are properties of the args object.
+    console.log(args.count);
+
+    // Write arbitrary JavaScript here: filter, aggregate, build derived data,
+    // remove non-public properties, or create new objects.
+    return documents.slice(0, args.count);
   },
 });
 
 // You can write data to the database via a mutation:
-export const addNumber = mutation({
+export const addOutfit = mutation({
   // Validators for arguments.
   args: {
-    value: v.number(),
+    desc: v.string(),
+    id: v.string(),
+    imageLink: v.string(),
   },
 
   // Mutation implementation.
@@ -38,7 +42,7 @@ export const addNumber = mutation({
     //// Mutations can also read from the database like queries.
     //// See https://docs.convex.dev/database/writing-data.
 
-    const id = await ctx.db.insert("numbers", { value: args.value });
+    const id = await ctx.db.insert("outfits", { desc: args.desc, id: args.id, imageLink: args.imageLink  });
 
     console.log("Added new document with id:", id);
     // Optionally, return a value from your mutation.
@@ -62,14 +66,13 @@ export const myAction = action({
     // const data = await response.json();
 
     //// Query data by running Convex queries.
-    const data = await ctx.runQuery(api.myFunctions.listNumbers, {
+    const data = await ctx.runQuery(api.myFunctions.listOutfits, {
       count: 10,
     });
     console.log(data);
 
     //// Write data by running Convex mutations.
-    await ctx.runMutation(api.myFunctions.addNumber, {
-      value: args.first,
-    });
+    await ctx.runMutation(api.myFunctions.addOutfit, { desc: "A description from GPT", id: "1111", imageLink: "linktoimg"  });
   },
 });
+
