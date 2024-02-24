@@ -23,7 +23,7 @@ export const listOutfits = query({
 
     // Write arbitrary JavaScript here: filter, aggregate, build derived data,
     // remove non-public properties, or create new objects.
-    return documents.slice(0, args.count);
+    return documents;
   },
 });
 
