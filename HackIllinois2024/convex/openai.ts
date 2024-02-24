@@ -5,7 +5,7 @@ import { action } from "./_generated/server";
 import { v } from "convex/values";
 
 // Initialize the OpenAI client with the given API key
-const apiKey = "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";
+const apiKey = "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";
 const openai = new OpenAI({ apiKey });
 
 export const chat = action({

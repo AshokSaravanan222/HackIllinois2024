@@ -1,0 +1,71 @@
+.inputs-container {
+    display: flex;
+    gap: 2%; /* Adjusted for simplicity to account for 4% total gap assuming an even distribution */
+}
+  
+.occasion-input {
+    flex: 0 0 45%;
+}
+  
+.accessories-input {
+    flex: 0 0 25%;
+}
+  
+.gender-input {
+    flex: 0 0 10%;
+    width: 10px;
+}
+  
+.budget-input {
+    width: 10px;
+    flex: 0 0 10%;
+}
+
+
+/*Styling for the images on the front page*/
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@600&display=swap");
+.App-header {
+  font-size: 2rem;
+  text-align: center;
+  font-family: "Oswald", sans-serif;
+  padding-bottom: 2rem;
+}
+.carousel-images {
+  position: relative;
+  border-radius: 10px;
+  height: 400px;
+  max-width: 650px;
+  margin: auto;
+  overflow: hidden;
+}
+.carousel-images img {
+  width: 99%;
+  height: 99%;
+  border-radius: 8px;
+  border: #ff00008e solid 2px;
+}
+.slide_direction {
+  display: flex;
+  justify-content: space-between;
+
+}
+.left,
+.right {
+    background-color: #fff;
+    color: #fff;
+    padding: 3px 8px 8px 5px;
+    margin: 0 20px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto 10px;
+    height: 25px;
+    width: 25px;
+}
+.left {
+    left: 29%;
+}
+.right {
+  right: 29%;
+}
