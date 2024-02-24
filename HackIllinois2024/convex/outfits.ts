@@ -1,9 +1,11 @@
 import { v } from "convex/values";
 import { query, mutation, internalMutation, action } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
+
 
 export const sendDallEOutfit = internalMutation(
-  async (ctx, { imageId, age, desc, gender, occasion }) => {
-    const outfit = { imageId: imageId, age: age, desc: desc, gender: gender, occasion: occasion };
+  async (ctx, { imageId , age , desc, gender, occasion }) => {
+    const outfit = { imageId: (imageId as Id<"_storage">), age: (age as number), desc: (desc as string) , gender: (gender as string), occasion: (occasion as string) };
     await ctx.db.insert("outfits", outfit);
   }
 );
