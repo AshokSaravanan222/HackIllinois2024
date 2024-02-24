@@ -15,7 +15,7 @@ export const sendDallEOutfit = action({
   },
   handler: async (ctx, args) => {
     try {
-      const apiKey = "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";
+      const apiKey = "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";
       if (!apiKey) {
         throw new Error(
           "Add your OPENAI_API_KEY as an env variable in the " +
@@ -24,7 +24,7 @@ export const sendDallEOutfit = action({
       }
       const openai = new OpenAI({ apiKey });
 
-      const prompt = "Generate a stylish outfit for a high schooler in europe."
+      const prompt = `I want an image of an entire college ${args.gender}, but I only them to appear in the image once. I want the image to depict what this person might wear for a ${args.occasion}, with the following accessor: ${args.desc}, and I do not want the individual clothing items to appear in the image.`
 
       // Check if the prompt is offensive.
       const modResponse = await openai.moderations.create({"input": prompt});
