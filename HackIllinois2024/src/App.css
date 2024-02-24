@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@600&display=swap");
 .inputs-container {
     display: flex;
     gap: 2%; /* Adjusted for simplicity to account for 4% total gap assuming an even distribution */
@@ -23,7 +24,6 @@
 
 
 /*Styling for the images on the front page*/
-@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@600&display=swap");
 .App-header {
   font-size: 2rem;
   text-align: center;
