@@ -15,7 +15,7 @@ export const sendDallEOutfit = action({
   },
   handler: async (ctx, args) => {
     try {
-      const apiKey = "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";
+      const apiKey = "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";
       if (!apiKey) {
         throw new Error(
           "Add your OPENAI_API_KEY as an env variable in the " +
