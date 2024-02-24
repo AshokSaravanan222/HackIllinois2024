@@ -14,7 +14,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as myFunctions from "../myFunctions.js";
+import type * as myFunctions from "../outfits.js";
 import type * as openai from "../openai.js";
 
 /**
