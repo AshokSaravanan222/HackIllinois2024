@@ -1,5 +1,9 @@
 import { useQuery, useAction } from "convex/react";
 import { api, internal} from "../convex/_generated/api";
+=======
+import { useMutation, useQuery, useAction } from "convex/react";
+import { api } from "../convex/_generated/api";
+>>>>>>> parent of a65c7ce (added backend integration)
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from "./components/ui/card";
 import React, { useState } from 'react';
@@ -45,13 +49,19 @@ function App() {
       setImage(null); // Reset or handle the image URL state in case of an error
     } finally {
       setIsLoading(false); // Stop loading whether it's successful or fails
+=======
+      setImageUrl(null); // Reset or handle the image URL state in case of an error
+>>>>>>> parent of a65c7ce (added backend integration)
     }
   };
-  
+
   return (
     <div className="App">
     <main className="container max-w-2xl mx-auto flex flex-col gap-8">
       <h1 className="text-4xl font-extrabold my-8 text-center">Styl</h1>
+      <Button onClick={() => addOutfit({ "desc": "Description from button", "id": "1112", "imageLink": "Link to img"})}>
+        Add a random outfit
+      </Button>
 
       <header className="App-header">
         <h1>PREVIOUSLY CREATED OUTFITS</h1>
@@ -64,15 +74,12 @@ function App() {
       <div className="flex flex-wrap justify-center gap-4">
         {outfits?.map((outfit, index) => (
           <Card key={index} className="max-w-sm">
-            <img src={outfit.imageUrl!} alt={outfit.desc} height="300px" width="auto" />;
             <CardHeader>
-              <CardTitle>{outfit.desc}</CardTitle>
-              <CardDescription>{outfit.occasion}</CardDescription>
+              <CardTitle>Outfit {index + 1}</CardTitle>
+              <CardDescription>{outfit.desc}</CardDescription>
             </CardHeader>
             <CardContent>
-              Occasion: {outfit.occasion}
-              Age: {outfit.age}
-              Gender: {outfit.gender}
+              Value: {outfit.id}
             </CardContent>
             <CardFooter>
               {/* Footer content like buttons or links for actions related to the card */}
@@ -115,8 +122,8 @@ function App() {
       />
 
       {/* Button to generate the image */}
-      <Button onClick={handleGenerateImage} disabled={isLoading}>
-        {isLoading ? 'Generating...' : 'Generate Outfit'}
+      <Button onClick={handleGenerateImage}>
+        Generate Outfit
       </Button>
 
       {/* Display the generated image if available */}
