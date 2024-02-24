@@ -133,6 +133,7 @@
 
 
 
+<<<<<<< HEAD
 // import React, { useState } from 'react';
 // import { useMutation, useQuery, useAction } from "convex/react";
 // import { api } from "../convex/_generated/api";
@@ -359,6 +360,10 @@ import { useMutation, useQuery, useAction } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { useQuery, useAction } from "convex/react";
 import { api, internal} from "../convex/_generated/api";
+=======
+import { useMutation, useQuery, useAction } from "convex/react";
+import { api } from "../convex/_generated/api";
+>>>>>>> parent of a65c7ce (added backend integration)
 import { Button } from "@/components/ui/button";
 import { Link } from "@/components/typography/link";
 import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from "./components/ui/card";
@@ -366,12 +371,12 @@ import './App.css'; // Assuming your styles are defined in App.css
 import Carousel from "./Carousel";
 
 import React, { useState } from 'react';
-import { Input } from "./components/ui/input";
 
 function App() {
   const outfits = useQuery(api.myFunctions.listOutfits, { count: 3 });
   const addOutfit = useMutation(api.myFunctions.addOutfit);
   const generateImage = useAction(api.openai.chat);
+<<<<<<< HEAD
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   // State for each input
   const [occasion, setOccasion] = useState('');
@@ -392,10 +397,13 @@ function App() {
   const sendDallEOutfit = useAction(api.openai.sendDallEOutfit);
 
   const [isLoading, setIsLoading] = useState(false); // Add this line
+=======
+>>>>>>> parent of a65c7ce (added backend integration)
   const [prompt, setPrompt] = useState(''); // State for user's prompt
-  const [image, setImage] = useState<string | null>(null); // dict mapping each storage id to each one of the img urls
+  const [imageUrl, setImageUrl] = useState<string | null>(null); // State to store the generated image URL
 
   const handleGenerateImage = async () => {
+<<<<<<< HEAD
         const fullPrompt = `I want an image of an entire college ${gender}, but I only them to appear in the image once. I want the image to depict what this person might wear for a ${occasion}, with the following accessor: ${accessories}, and I do not want the individual clothing items to appear in the image.`
 
       try {
@@ -406,22 +414,32 @@ function App() {
       setGender('');
       setBudget(''); // Reset the budget input after generating the image
     setIsLoading(true); // Start loading
+=======
+    const fullPrompt = `Stylish outfit idea for ${prompt}`;
+>>>>>>> parent of a65c7ce (added backend integration)
     try {
-      await sendDallEOutfit({ age: 5, desc: "test", gender: "M", occasion: "italtian"});
-      setImage(null);
+      const url: string = await generateImage({ prompt: fullPrompt });
+      setImageUrl(url); // Store the generated image URL in state
+      setPrompt(''); // Optionally reset the prompt input after generating the image
     } catch (error) {
       console.error("Failed to generate image:", error);
+<<<<<<< HEAD
       setImageUrl(null);
       setImage(null); // Reset or handle the image URL state in case of an error
     } finally {
       setIsLoading(false); // Stop loading whether it's successful or fails
+=======
+      setImageUrl(null); // Reset or handle the image URL state in case of an error
+>>>>>>> parent of a65c7ce (added backend integration)
     }
-    setPrompt(''); // Optionally reset the prompt input after generating the image
   };
-  
+
   return (
     <main className="container max-w-2xl mx-auto flex flex-col gap-8">
       <h1 className="text-4xl font-extrabold my-8 text-center">Styl</h1>
+      <Button onClick={() => addOutfit({ "desc": "Description from button", "id": "1112", "imageLink": "Link to img"})}>
+        Add a random outfit
+      </Button>
 
       <div className="App">
         <header className="App-header">
@@ -435,15 +453,12 @@ function App() {
       <div className="flex flex-wrap justify-center gap-4">
         {outfits?.map((outfit, index) => (
           <Card key={index} className="max-w-sm">
-            <img src={outfit.imageUrl!} alt={outfit.desc} height="300px" width="auto" />;
             <CardHeader>
-              <CardTitle>{outfit.desc}</CardTitle>
-              <CardDescription>{outfit.occasion}</CardDescription>
+              <CardTitle>Outfit {index + 1}</CardTitle>
+              <CardDescription>{outfit.desc}</CardDescription>
             </CardHeader>
             <CardContent>
-              Occasion: {outfit.occasion}
-              Age: {outfit.age}
-              Gender: {outfit.gender}
+              Value: {outfit.id}
             </CardContent>
             <CardFooter>
               {/* Footer content like buttons or links for actions related to the card */}
@@ -489,7 +504,7 @@ function App() {
       <Button onClick={handleGenerateImage}>
         Generate Outfit
       {/* Input for user's prompt */}
-      <Input 
+      <input 
         type="text" 
         placeholder="Occasion Description:" 
         value={prompt}
@@ -498,15 +513,12 @@ function App() {
       />
 
       {/* Button to generate the image */}
-      <Button onClick={handleGenerateImage} disabled={isLoading}>
-        {isLoading ? 'Generating...' : 'Generate Outfit'}
+      <Button onClick={handleGenerateImage}>
+        Generate Outfit
       </Button>
 
       {/* Display the generated image if available */}
-      {image && <img src={image} alt="Generated Outfit" />}
-
-      {/* Optionally show a loading text or spinner */}
-      {isLoading && <div>Loading...</div>}
+      {imageUrl && <img src={imageUrl} alt="Generated Outfit" />}
 
       {/* Additional content */}
       <p>Edit <code>convex/myFunctions.ts</code> to change your backend</p>
