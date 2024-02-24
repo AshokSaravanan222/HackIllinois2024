@@ -14,26 +14,6 @@ export const chat = action({
   },
   handler: async (ctx, args) => {
     try {
-      const apiKey = "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";
-      if (!apiKey) {
-        throw new Error(
-          "Add your OPENAI_API_KEY as an env variable in the " +
-            "[dashboard](https://dasboard.convex.dev)"
-        );
-      }
-      const openai = new OpenAI({ apiKey });
-
-      const prompt = `I want an image of an entire college ${args.gender}, but I only them to appear in the image once. I want the image to depict what this person might wear for a ${args.occasion}, with the following accessor: ${args.desc}, and I do not want the individual clothing items to appear in the image.`
-
-      // Check if the prompt is offensive.
-      const modResponse = await openai.moderations.create({"input": prompt});
-      const modResult = modResponse.results[0];
-      if (modResult.flagged) {
-        throw new Error(
-          `Your prompt was flagged: ${JSON.stringify(modResult.categories)}`
-        );
-      }
-
       const response: ImagesResponse = await openai.images.generate({
         prompt: args.prompt,
         model: "dall-e-2",
