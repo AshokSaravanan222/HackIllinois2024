@@ -50,7 +50,6 @@ export const sendDallEOutfit = action({
       if (!imageResponse.ok) {
         throw new Error(`failed to download: ${imageResponse.statusText}`);
       }
-
       // Store the image to Convex storage.
       const image = await imageResponse.blob();
       // TODO update storage.store to accept whatever kind of Blob is returned from node-fetch
