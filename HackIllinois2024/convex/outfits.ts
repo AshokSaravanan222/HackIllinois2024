@@ -18,10 +18,10 @@ export const listOutfits = query({
 
   // Function implementation.
   handler: async (ctx, args) => {
-    // Read the database as many times as you need here.
-    // See https://docs.convex.dev/database/reading-data.
+    // Read the database to get outfits.
     const outfits = await ctx.db.query("outfits").collect();
 
+    // Get outfits with image URLs.
     const outfitsWithImageURLs = await Promise.all(
       outfits.map(async (outfit) => ({
         ...outfit,
@@ -29,7 +29,15 @@ export const listOutfits = query({
       }))
     );
 
-    return outfitsWithImageURLs;
+    // Shuffle the array of outfits with image URLs.
+    const shuffledOutfits = outfitsWithImageURLs.sort(() => 0.5 - Math.random());
+
+    // Determine the number of outfits to return based on args.count or the maximum available.
+    const count = Math.min(args.count, shuffledOutfits.length);
+
+    // Return a random selection of outfits based on the count.
+    return shuffledOutfits.slice(0, count);
   },
 });
+
 

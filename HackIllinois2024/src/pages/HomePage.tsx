@@ -7,12 +7,22 @@ import { Input } from "../components/ui/input";
 import '../App.css'; // Assuming your styles are defined in App.css
 import Carousel from "../Carousel";
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+  SelectLabel,
+} from '../components/ui/select'; // Update the path accordingly
 
 function HomePage() {
   const outfits = useQuery(api.outfits.listOutfits, { count: 3 });
   const sendDallEOutfit = useAction(api.openai.sendDallEOutfit);
-  
-  const [image, setImage] = useState<string | null>(null); // dict mapping each storage id to each one of the img urls
+
   const [occasion, setOccasion] = useState('');
   const [accessories, setAccessories] = useState('');
   const [gender, setGender] = useState('');
@@ -35,6 +45,29 @@ function HomePage() {
     navigate(`/outfit/${outfitId}`);
   };
 
+  const FruitSelect: React.FC = () => {
+    const [value, setValue] = React.useState('');
+  
+    return (
+      <Select onValueChange={setValue}>
+        <SelectTrigger aria-label="Fruit">
+          <SelectValue placeholder="Select a fruit" />
+        </SelectTrigger>
+        <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Fruits</SelectLabel>
+              <SelectItem value="apple">Apple</SelectItem>
+              <SelectItem value="banana">Banana</SelectItem>
+              <SelectItem value="orange">Orange</SelectItem>
+              <SelectItem value="mango">Mango</SelectItem>
+            </SelectGroup>
+        </SelectContent>
+      </Select>
+
+
+    );
+  };
+
 
   const handleGenerateImage = async () => {
     setIsLoading(true); // Start loading
@@ -50,52 +83,49 @@ function HomePage() {
       
     } catch (error) {
       console.error("Failed to generate image:", error);
-      setImage(null); // Reset or handle the image URL state in case of an error
     } finally {
       setIsLoading(false); // Stop loading whether it's successful or fails
     }
   };
   
   return (
-    <div className="App">
-    <main className="container max-w-2xl mx-auto flex flex-col gap-8">
-      <h1 className="text-4xl font-extrabold my-8 text-center">Styl</h1>
-
-      <header className="App-header">
-        <h1>PREVIOUSLY CREATED OUTFITS</h1>
-      </header>
-      <main>
+<div className="App">
+    <main className="container max-w-7xl mx-auto flex flex-col gap-8 p-4">
+      <h1 className="text-9xl font-bold my-8 text-center">styl</h1>
+      <header className="App-header mb-4">
+        <h2 className="text-2xl">Previous</h2>
         <Carousel images={images} />
-      </main>
+      </header>
 
       {/* Display cards dynamically */}
-      <div className="flex flex-wrap justify-center gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {outfits?.map((outfit, index) => (
-          <Card key={index} className="max-w-sm">
-            <img src={outfit.imageUrl!} alt={outfit.desc} height="300px" width="auto" />;
-            <CardHeader>
-              <CardTitle>{outfit.desc}</CardTitle>
-              <CardDescription>{outfit.occasion}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              Occasion: {outfit.occasion}
-              Age: {outfit.age}
-              Gender: {outfit.gender}
-            </CardContent>
-            <CardFooter>
-              {/* Footer content like buttons or links for actions related to the card */}
-            </CardFooter>
-          </Card>
+          <Link to={`/outfit/${outfit._id}`} key={index} className="overflow-hidden rounded-lg shadow-lg block text-current no-underline">
+            <div className="relative">
+              <div className="h-60 bg-cover bg-center" style={{ backgroundImage: `url(${outfit.imageUrl})` }}></div>
+              <div className="p-4 bg-white bg-opacity-75">
+                <CardHeader>
+                  <CardTitle>{outfit.occasion}</CardTitle>
+                  <CardDescription>{outfit.desc}</CardDescription>
+                </CardHeader>
+                <CardFooter>
+                  {/* Footer content */}
+                </CardFooter>
+              </div>
+            </div>
+          </Link>
         ))}
       </div>
 
-      {/* Input for user's prompt */}
-      <Input 
+      {/* Inputs and other content */}
+      <div className="flex flex-col gap-4">
+        {/* Your inputs and other components here */}
+        <Input 
         type="text" 
         placeholder="Occasion Description:" 
         value={occasion}
         onChange={(e) => setOccasion(e.target.value)} 
-        className="text-input occasion-input"
+        className="text-input"
       />
 
       <Input 
@@ -103,7 +133,7 @@ function HomePage() {
        placeholder="Accessories:" 
        value={accessories}
        onChange={(e) => setAccessories(e.target.value)} 
-       className="text-input accessories-input"
+       className="text-input"
       />
 
       <Input 
@@ -111,7 +141,7 @@ function HomePage() {
          placeholder="Gender:" 
          value={gender}
          onChange={(e) => setGender(e.target.value)} 
-         className="text-input gender-input"
+         className="text-input"
       />
 
       <Input 
@@ -119,23 +149,14 @@ function HomePage() {
           placeholder="Budget:" 
           value={budget}
           onChange={(e) => setBudget(e.target.value)} 
-          className="text-input budget-input"
+          className="text-input"
       />
-
-      {/* Button to generate the image */}
-      <Button onClick={handleGenerateImage} disabled={isLoading}>
-        {isLoading ? 'Generating...' : 'Generate Outfit'}
-      </Button>
-
-      <Button onClick={() => goToOutfitPage("outfit1")}>
-        {"Go to outfitid1"}
-      </Button>
-
-      {/* Display the generated image if available */}
-      {image && <img src={image} alt="Generated Outfit" />}
-
-      {/* Optionally show a loading text or spinner */}
-      {isLoading && <div>Loading...</div>}
+        {/* Repeat for other inputs */}
+        <FruitSelect />
+        <Button onClick={handleGenerateImage} disabled={isLoading}>{isLoading ? 'Generating...' : 'Generate Outfit'}</Button>
+        <Button onClick={() => goToOutfitPage("outfit1")}>{"Go to outfitid1"}</Button>
+        {isLoading && <div>Loading...</div>}
+      </div>
     </main>
   </div>
   );
