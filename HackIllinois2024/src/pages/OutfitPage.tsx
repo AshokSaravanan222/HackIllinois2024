@@ -2,6 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { api } from "../../convex/_generated/api";
 import { useAction, useQuery } from "convex/react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from '../components/ui/dialog'; // Adjust the import path according to your project structure
+import Exa from "exa-js";
+
 
 const OutfitPage: React.FC = () => {
   const location = useLocation();
@@ -12,6 +22,35 @@ const OutfitPage: React.FC = () => {
   const [isLoadingText, setIsLoadingText] = useState(false);
   const [isLoadingImage, setIsLoadingImage] = useState(true);
   const [image, setImage] = useState<string | null>(null);
+  const exa = new Exa(process.env.EXA_API_KEY);
+  const [isOpen, setIsOpen] = useState(false); // State to track the modal open status
+  const [searchResults, setSearchResults] = useState([]);
+
+  // Example function to extract domains from the file
+  const extractDomains = (): string[] => {
+    // This function should read from the uploaded text file and return an array of domains
+    // For demonstration, returning a static list. Replace this logic as needed.
+    return ['nytimes.com', 'wsj.com', 'target.com', 'macys.com', 'nordstrom.com'];
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      const fetchSearchResults = async () => {
+        const domains = extractDomains(); // Call the function to extract domains from the file
+        try {
+          const response = await exa.search(text, {
+            numResults: 5,
+            includeDomains: domains,
+          });
+          setSearchResults(response); // Assuming 'response' is the array of search results
+        } catch (error) {
+          console.error("Failed to fetch search results:", error);
+        }
+      };
+
+      fetchSearchResults();
+    }
+  }, [isOpen, text]); // Depend on isOpen and text state
 
   useEffect(() => {
     if (imgUrl) {
@@ -49,40 +88,28 @@ const OutfitPage: React.FC = () => {
 
   return (
     <div>
-      {isLoadingImage ? (
-        <p>Getting your image</p>
-      ) : (
-        <div className="h-screen flex">
-          <div className="flex-grow flex items-center justify-center p-4" style={{ maxWidth: '85%' }}>
-          <div className="text-2xl">
-            {/* Adjusted for bold and moved up */}
-            {isLoadingText ? (
-                <p className="text-lg font-semibold">Finding your style...</p>
-            ) : (
-              <div>
-                <h2 className="font-bold mb-3 text-3xl" style={{ marginBottom: '1.5rem' }}>You would look stylish wearing a:</h2>
-                {splitAndTrimString(text).map((text, index) => (
-                    <div key={index}>
-                      <p className="text-3xl my-3">{text}</p>
-                    </div>
-                  ))}
-                {/* <ul className="leading-10">
-                  <li>Light-wash denim jacket, classic fit.</li>
-                  <li>Grey crew-neck sweater, simple design.</li>
-                  <li>High-waisted denim jeans, matching jacket.</li>
-                  <li>White low-top sneakers, clean look.</li>
-                  <li>Dark leather belt, silver rectangular buckle.</li>
-                  <li>Brown leather tote bag, unstructured style.</li>
-                </ul> */}
-              </div>
-            )}
-
-          </div>
-        </div>
-        <img src={image!} alt="Outfit" className="object-contain self-center rounded-lg" style={{ maxHeight: '70%', marginTop: '10%', marginBottom: '10%', marginRight: '20%' }} />
-      </div>
-      )}
-      
+      {/* Your existing component return code */}
+      {/* Modify the Dialog component to include search results */}
+      {splitAndTrimString(text).map((text, index) => (
+        <Dialog key={index} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <p className="text-3xl my-3 cursor-pointer">{text}</p>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogTitle>Outfit Detail</DialogTitle>
+            <DialogDescription>
+              This outfit includes {text}.
+              {/* Display search results here */}
+              <ul className="list-disc pl-5">
+                {searchResults.map((result, index) => (
+                  <li key={index}>{result.title} - {result.url}</li> // Adjust according to your actual result structure
+                ))}
+              </ul>
+            </DialogDescription>
+            <DialogClose className="close-button-styles">Close</DialogClose>
+          </DialogContent>
+        </Dialog>
+      ))}
     </div>
   );
 };
