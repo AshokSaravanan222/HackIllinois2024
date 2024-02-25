@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate} from 'react-router-dom';
 import { api } from "../../convex/_generated/api";
 import { useAction, useQuery } from "convex/react";
 import {
@@ -11,6 +11,7 @@ import {
   DialogClose,
 } from '../components/ui/dialog'; // Adjust the import path according to your project structure
 import Exa, { SearchResponse, SearchResult } from "exa-js";
+import { ArrowLeftIcon } from '@radix-ui/react-icons';
 
 
 const OutfitPage: React.FC = () => {
@@ -28,13 +29,17 @@ const OutfitPage: React.FC = () => {
   const exa = new Exa("542b09d5-db6d-4e5a-964e-e42a38603cf2");
   const [isOpen, setIsOpen] = useState(false); // State to track the modal open status
   const [searchResults, setSearchResults] = useState<SearchResult[] | null>(null);
-  
+  const navigate = useNavigate();
 
   // Example function to extract domains from the file
   const extractDomains = (): string[] => {
     // This function should read from the uploaded text file and return an array of domains
     // For demonstration, returning a static list. Replace this logic as needed.
     return ['nytimes.com', 'wsj.com', 'target.com', 'macys.com', 'nordstrom.com'];
+  };
+
+  const handleBackClick = () => {
+    navigate('/'); // Adjust the path as needed for your home screen
   };
 
   useEffect(() => {
@@ -96,9 +101,19 @@ const OutfitPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className='relative'>
+      <button 
+        onClick={handleBackClick} 
+        className="absolute top-4 left-4 flex items-center justify-center p-2 rounded-full text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        aria-label="Go back"
+      >
+        <ArrowLeftIcon width={24} height={24} />
+      </button>
       {isLoadingImage ? (
-        <p>Getting your image</p>
+        <div className='center'>
+          <p className="text-lg font-semibold">Getting your image...</p>
+        </div>
+
       ) : (
         <div className="h-screen flex">
           <div className="flex-grow flex items-center justify-center p-4" style={{ maxWidth: '85%' }}>
