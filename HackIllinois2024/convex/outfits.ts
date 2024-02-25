@@ -10,6 +10,12 @@ export const sendDallEOutfit = internalMutation(
   }
 );
 
+export const sendChatOutfit = internalMutation(
+  async (ctx, {outputId, text}) => {
+    // update the id of the existing document, with the output id
+  }
+);
+
 export const listOutfits = query({
   // Validators for arguments.
   args: {
@@ -30,6 +36,5 @@ export const listOutfits = query({
     );
 
     return outfitsWithImageURLs;
-  },
-});
+  },});
 

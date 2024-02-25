@@ -1,10 +1,11 @@
 "use node";
 import OpenAI from "openai";
-import { ImagesResponse } from "openai/resources";
+import { ChatCompletion, ImagesResponse } from "openai/resources";
 import { action } from "./_generated/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
-import { useState } from "react";
+import { Component, useState } from "react";
+import { Id } from "./_generated/dataModel";
 
 export const sendDallEOutfit = action({
   args: {
@@ -34,6 +35,7 @@ export const sendDallEOutfit = action({
           `Your prompt was flagged: ${JSON.stringify(modResult.categories)}`
         );
       }
+
 
       const response: ImagesResponse = await openai.images.generate({
         prompt: prompt,
@@ -67,6 +69,59 @@ export const sendDallEOutfit = action({
       });
 
       return storageId
+      // Use the response here, for example, save the image URL
+    } catch (error) {
+      console.error("Failed to generate image:", error);
+      // Handle the error appropriately
+    }
+  },
+});
+
+export const sendChatOutfit = action({
+
+  args: {
+    outfitId: v.string(),
+    imgUrl: v.string(),
+  },
+
+  handler: async (ctx, args) => {
+    try {
+      const apiKey = "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";
+      if (!apiKey) {
+        throw new Error(
+          "Add your OPENAI_API_KEY as an env variable in the " +
+            "[dashboard](https://dasboard.convex.dev)"
+        );
+      }
+      const openai = new OpenAI({ apiKey });
+
+      const response: ChatCompletion = await openai.chat.completions.create({
+        "model" : "gpt-4-vision-preview",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {"type": "text", "text": "Describe this image."},
+              {
+                "type": "image_url",
+                "image_url": {
+                  "url": args.imgUrl,
+                },
+              },
+            ],
+          }
+        ],
+        "max_tokens": 300,
+      });
+      console.log(response);
+      const responseText = response.choices[0].message.content;
+
+      await ctx.runMutation(internal.outfits.sendChatOutfit, {
+        id: args.outfitId,
+        text: responseText
+      });
+
+      return responseText
       // Use the response here, for example, save the image URL
     } catch (error) {
       console.error("Failed to generate image:", error);

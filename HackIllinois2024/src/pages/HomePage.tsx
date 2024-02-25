@@ -26,7 +26,6 @@ function HomePage() {
     "https://images.pexels.com/photos/632522/pexels-photo-632522.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     "https://images.pexels.com/photos/777059/pexels-photo-777059.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
   ];
-
   const [isLoading, setIsLoading] = useState(false); // Add this line
   const navigate = useNavigate();
 

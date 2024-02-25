@@ -3,6 +3,6 @@ import OutfitPage from "@/pages/OutfitPage";
 
 export default function Root() {
     return (
-      <OutfitPage />
+      <HomePage />
     );
   }
