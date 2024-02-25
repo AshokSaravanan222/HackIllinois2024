@@ -72,7 +72,7 @@ function HomePage() {
   const handleGenerateImage = async () => {
     setIsLoading(true); // Start loading
     try {
-      const storageId = await sendDallEOutfit({ age: 17, desc: accessories, gender: gender, occasion: occasion});
+      const storageId = await sendDallEOutfit({ age: 17, accessories: accessories, gender: gender, occasion: occasion});
 
       setOccasion('');
       setAccessories('');
@@ -109,7 +109,7 @@ function HomePage() {
                 <div className="p-4 bg-white bg-opacity-75">
                   <CardHeader>
                     <CardTitle>{outfit.occasion}</CardTitle>
-                    <CardDescription>{outfit.desc}</CardDescription>
+                    <CardDescription>{outfit.accessories}</CardDescription>
                   </CardHeader>
                   <CardFooter>
                     {/* Footer content */}

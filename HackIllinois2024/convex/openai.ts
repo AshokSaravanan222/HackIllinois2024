@@ -10,13 +10,13 @@ import { Id } from "./_generated/dataModel";
 export const sendDallEOutfit = action({
   args: {
     age: v.number(),
-    desc: v.string(),
+    accessories: v.string(),
     gender: v.string(),
     occasion: v.string(),
   },
   handler: async (ctx, args) => {
     try {
-      const apiKey = "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";
+      const apiKey = process.env.OPENAI_API_KEY;
       if (!apiKey) {
         throw new Error(
           "Add your OPENAI_API_KEY as an env variable in the " +
@@ -25,7 +25,7 @@ export const sendDallEOutfit = action({
       }
       const openai = new OpenAI({ apiKey });
 
-      const prompt = `I want an image of an entire college ${args.gender}, but I only them to appear in the image once. I want the image to depict what this person might wear for a ${args.occasion}, with the following accessor: ${args.desc}, and I do not want the individual clothing items to appear in the image.`
+      const prompt = `I want an image of an entire college ${args.gender}, but I only them to appear in the image once. I want the image to depict what this person might wear for a ${args.occasion}, with the following accessor: ${args.accessories}, and I do not want the individual clothing items to appear in the image.`
 
       // Check if the prompt is offensive.
       const modResponse = await openai.moderations.create({"input": prompt});
@@ -63,7 +63,7 @@ export const sendDallEOutfit = action({
       await ctx.runMutation(internal.outfits.sendDallEOutfit, {
         imageId: storageId,
         age: args.age,
-        desc: args.desc,
+        accessories: args.accessories,
         gender: args.gender,
         occasion: args.occasion
       });
@@ -86,7 +86,7 @@ export const sendChatOutfit = action({
 
   handler: async (ctx, args) => {
     try {
-      const apiKey = "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";
+      const apiKey = process.env.OPENAI_API_KEY;
       if (!apiKey) {
         throw new Error(
           "Add your OPENAI_API_KEY as an env variable in the " +

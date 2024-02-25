@@ -10,7 +10,7 @@ interface CarouselProps {
     imageUrl: string | null;
     _id: string;
     _creationTime: number;
-    desc: string;
+    accessories: string;
     occasion: string;
     imageId: Id<"_storage">;
     age: number;
@@ -42,7 +42,7 @@ const Carousel: FC<CarouselProps> = ({ outfit }) => {
             <div className="p-4 bg-white bg-opacity-75">
               <CardHeader>
                 <CardTitle>{outfit.occasion}</CardTitle>
-                <CardDescription>{outfit.desc}</CardDescription>
+                <CardDescription>{outfit.accessories}</CardDescription>
               </CardHeader>
               <CardFooter>
                 {/* Footer content */}

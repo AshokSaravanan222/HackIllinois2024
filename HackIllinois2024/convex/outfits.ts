@@ -4,8 +4,8 @@ import { Id } from "./_generated/dataModel";
 
 
 export const sendDallEOutfit = internalMutation(
-  async (ctx, { imageId , age , desc, gender, occasion }) => {
-    const outfit = { imageId: (imageId as Id<"_storage">), age: (age as number), desc: (desc as string) , gender: (gender as string), occasion: (occasion as string) };
+  async (ctx, { imageId , age , accessories, gender, occasion }) => {
+    const outfit = { imageId: (imageId as Id<"_storage">), age: (age as number), accessories: (accessories as string) , gender: (gender as string), occasion: (occasion as string) };
     await ctx.db.insert("outfits", outfit);
   }
 );
