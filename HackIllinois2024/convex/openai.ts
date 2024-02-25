@@ -37,7 +37,7 @@ export const sendDallEOutfit = action({
 
       const response = await openai.images.generate({
         prompt: prompt,
-        model: "dall-e-2",
+        model: "dall-e-3",
         n: 1,
         quality: "standard",
         response_format: "url",

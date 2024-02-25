@@ -20,6 +20,15 @@ export const sendChatOutfit = internalMutation(
   }
 );
 
+export const searchLinks = internalMutation(
+  async (ctx, {outfitId, text}) => {
+    const outfitIdJSON = {id: (outfitId as Id<"outfits">) }
+    const value = {gptDesc: (text as string)};
+    await ctx.db.patch(outfitIdJSON.id, value);
+    return value;
+  }
+);
+
 export const getOutfitImageLink = query({
   // Validators for arguments.
   args: {
@@ -41,6 +50,18 @@ export const getOutfitDesc = query({
   handler: async (ctx, args) => {
     const outfit = await ctx.db.get(args.outfitId);
     return outfit?.gptDesc
+  },
+});
+
+export const getOutfitInfo = query({
+  // Validators for arguments.
+  args: {
+    outfitId: v.id("outfits")
+  },
+  // Function implementation.
+  handler: async (ctx, args) => {
+    const outfit = await ctx.db.get(args.outfitId);
+    return outfit;
   },
 });
 

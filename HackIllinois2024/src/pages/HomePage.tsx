@@ -69,8 +69,10 @@ function HomePage() {
 
 
       <header className="flex flex-col text-left">
-        <p className="text-2xl font-bold my-8 ">our past designs</p>
-      </header>
+  <p className="text-2xl font-bold my-8 px-4 py-2 bg-blue-400 rounded-full inline-block">
+    our past designs
+  </p>
+</header>
 
       {/* Display cards dynamically */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -92,9 +94,11 @@ function HomePage() {
           ))}
         </div>
 
-      <header className="flex flex-col text-center">
-        <p className="text-5xl font-bold my-8 ">create your styl</p>
-      </header>
+        <header className="flex flex-col text-center">
+          <p className="text-5xl font-bold my-8">
+            create your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">styl</span>
+          </p>
+        </header>
       <div>
         <p className="text-2xl my-8 ">Use our quick and easy tool to find your next fit. Enter in some details and we will generate some images that can show you what it looks like.</p>
       </div>

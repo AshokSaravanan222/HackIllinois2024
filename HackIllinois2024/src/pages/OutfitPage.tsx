@@ -10,8 +10,10 @@ import {
   DialogDescription,
   DialogClose,
 } from '../components/ui/dialog'; // Adjust the import path according to your project structure
-import Exa, { SearchResponse, SearchResult } from "exa-js";
+// import Exa, { SearchResponse, SearchResult } from "exa-js";
 import { ArrowLeftIcon } from '@radix-ui/react-icons';
+import RetailersDisplay from '@/Retailers';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 
 const OutfitPage: React.FC = () => {
@@ -19,6 +21,7 @@ const OutfitPage: React.FC = () => {
   const { outfitId } = location.state || {};
   const imgUrl = useQuery(api.outfits.getOutfitImageLink, { outfitId: outfitId });
   const outfitDesc = useQuery(api.outfits.getOutfitDesc, { outfitId: outfitId });
+  // const outfitInfo = useQuery(api.outfits.getOutfitInfo, { outfitId: outfitId });
 
   const sendChatOutfit = useAction(api.openai.sendChatOutfit);
   const [text, setText] = useState(" ");
@@ -26,40 +29,41 @@ const OutfitPage: React.FC = () => {
   const [isLoadingImage, setIsLoadingImage] = useState(true);
   const [image, setImage] = useState<string | null>(null);
 
-  const exa = new Exa("542b09d5-db6d-4e5a-964e-e42a38603cf2");
+  // const exa = new Exa("542b09d5-db6d-4e5a-964e-e42a38603cf2");
   const [isOpen, setIsOpen] = useState(false); // State to track the modal open status
-  const [searchResults, setSearchResults] = useState<SearchResult[] | null>(null);
+  // const [searchResults, setSearchResults] = useState<SearchResult[] | null>(null);
   const navigate = useNavigate();
-
-  // Example function to extract domains from the file
-  const extractDomains = (): string[] => {
-    // This function should read from the uploaded text file and return an array of domains
-    // For demonstration, returning a static list. Replace this logic as needed.
-    return ['nytimes.com', 'wsj.com', 'target.com', 'macys.com', 'nordstrom.com'];
-  };
 
   const handleBackClick = () => {
     navigate('/'); // Adjust the path as needed for your home screen
   };
 
-  useEffect(() => {
-    const fetchSearchResults = async () => {
-      if (isOpen && text) {
-        const domains = extractDomains();
-        try {
-          const response: SearchResponse = await exa.search(text, {
-            numResults: 5,
-            includeDomains: domains,
-          });
-          setSearchResults(response.results);
-        } catch (error) {
-          console.error("Failed to fetch search results:", error);
-        }
-      }
-    };
-
-    fetchSearchResults();
-  }, [isOpen, text]);
+  // useEffect(() => {
+  //   const fetchSearchResults = async (text: string) => {
+  //     const DEPLOYMENT_NAME = "https://watchful-mandrill-798.convex.cloud/exaSearch"; // Replace with your actual deployment name
+  //     try {
+  //       const response = await fetch(DEPLOYMENT_NAME, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ query: text }),
+  //       });
+        
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch search results");
+  //       }
+  //       const data = await response.json();
+  //       console.log(data)
+  //       // Use the data as needed in your component
+  //     } catch (error) {
+  //       console.error("Error fetching search results:", error);
+  //     }
+  //   };
+    
+  //   fetchSearchResults(`major retailers selling ${text} for ${outfitInfo?.gender} aged ${outfitInfo?.age} and for the ${outfitInfo?.occasion}`);
+  // }, [isOpen, text]);
+  
 
   useEffect(() => {
     if (imgUrl) {
@@ -122,26 +126,26 @@ const OutfitPage: React.FC = () => {
             {isLoadingText ? (
                 <p className="text-lg font-semibold">Finding your style...</p>
             ) : (
-              <div>
-                <h2 className="font-bold mb-3 text-3xl" style={{ marginBottom: '1.5rem' }}>You would look stylish wearing a:</h2>
+              <div className='p-10'>
+                <h2 className="font-bold mb-3 text-3xl" style={{ marginBottom: '1.5rem' }}>You would look stylish wearing:</h2>
                 {/* Modify the Dialog component to include search results */}
                 {splitAndTrimString(text).map((text, index) => (
                   <Dialog key={index} onOpenChange={setIsOpen}>
                     <DialogTrigger asChild>
-                      <p className="text-3xl my-3 cursor-pointer">{text}</p>
+                      {/* Wrap the text with a <span> and apply underline class to it */}
+                      <span className="text-3xl my-3 cursor-pointer underline inline-block">
+                        <p>{text}</p> {/* Ensure the <p> tag is the only child of <span> */}
+                      </span>
                     </DialogTrigger>
-                    <DialogContent>
-                      <DialogTitle>Outfit Detail</DialogTitle>
+                    <DialogContent className="max-w-lg max-h-[80vh] flex flex-col">
+                      <DialogTitle>{text}</DialogTitle>
                       <DialogDescription>
-                        This outfit includes {text}.
-                        {/* Display search results here */}
-                        <ul className="list-disc pl-5">
-                          {searchResults?.map((result, index) => (
-                            <li key={index}>{result.title} - {result.url}</li> // Adjust according to your actual result structure
-                          ))}
-                        </ul>
+                        Find stores near you.
                       </DialogDescription>
-                      <DialogClose className="close-button-styles">Close</DialogClose>
+                      <div className="flex-grow overflow-auto">
+                        <RetailersDisplay searchQuery={text} />
+                      </div>
+                      <DialogClose className="mt-4 self-end">Close</DialogClose>
                     </DialogContent>
                   </Dialog>
                 ))}
