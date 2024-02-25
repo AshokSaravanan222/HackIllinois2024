@@ -1,52 +1,46 @@
-import React, { useState }from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import image from "./Outfit1.png";
 import { api } from "../../convex/_generated/api";
 import { useAction } from "convex/react";
 import { Id } from 'convex/_generated/dataModel';
-import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 
 const OutfitPage: React.FC = () => {
   const { outfitId } = useParams<{ outfitId: string }>();
   const sendChatOutfit = useAction(api.openai.sendChatOutfit);
-
-  const [text, setText] = useState(" "); // Add this line
-  const [isLoading, setIsLoading] = useState(false); // Add this line
-
+  const [text, setText] = useState(" ");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Function to handle navigation
-  const goToHomePage = () => {
-    navigate("/");
-  };
-
-  const handleGenerateText= async () => {
-    setIsLoading(true); // Start loading
+  const handleGenerateText = async () => {
+    setIsLoading(true);
     try {
-      const text = await sendChatOutfit({"imgUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg", "outfitId": (outfitId as string) });
-      setText(text);
-
+      const generatedText = await sendChatOutfit({ imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg", outfitId: outfitId as string });
+      setText(generatedText);
     } catch (error) {
       console.error("Failed to get text:", error);
     } finally {
-      setIsLoading(false); // Stop loading whether it's successful or fails
+      setIsLoading(false);
     }
   };
 
-  
-
   return (
-    <div>
-      <p>Outfit Features: {outfitId}</p>
-      {image && <img src={image} alt="Generated Outfit" />}
-      
-      <Button onClick={handleGenerateText} disabled={isLoading}>
-        {isLoading ? 'Generating...' : 'Generate Text'}
-      </Button>
-
-      <p>{text}</p>
-
+    <div className="h-screen flex">
+      <div className="flex-grow flex items-center justify-center p-4" style={{ maxWidth: '85%' }}>
+        <div className="text-2xl">
+          <h2 className="font-bold mb-2" style={{ marginBottom: '2rem' }}>You would look stylish wearing:</h2> {/* Adjusted for bold and moved up */}
+          <ul className="leading-10">
+            <li>Light-wash denim jacket, classic fit.</li>
+            <li>Grey crew-neck sweater, simple design.</li>
+            <li>High-waisted denim jeans, matching jacket.</li>
+            <li>White low-top sneakers, clean look.</li>
+            <li>Dark leather belt, silver rectangular buckle.</li>
+            <li>Brown leather tote bag, unstructured style.</li>
+          </ul>
+        </div>
+      </div>
+      <img src={image} alt="Outfit" className="object-contain self-center rounded-lg" style={{ maxHeight: '70%', marginTop: '10%', marginBottom: '10%', marginRight: '20%' }} />
     </div>
   );
 };
