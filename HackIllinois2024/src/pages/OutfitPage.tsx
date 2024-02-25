@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { api } from "../../convex/_generated/api";
 import { useAction, useQuery } from "convex/react";
-import { Button } from "@/components/ui/button";
 
 const OutfitPage: React.FC = () => {
   const location = useLocation();
@@ -13,7 +12,6 @@ const OutfitPage: React.FC = () => {
   const [isLoadingText, setIsLoadingText] = useState(false);
   const [isLoadingImage, setIsLoadingImage] = useState(true);
   const [image, setImage] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (imgUrl) {

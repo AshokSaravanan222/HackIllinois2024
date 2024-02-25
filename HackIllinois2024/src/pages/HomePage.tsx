@@ -1,7 +1,7 @@
 import { useQuery, useAction } from "convex/react";
 import { api} from "../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
-import {CardHeader, CardFooter, CardTitle, CardDescription} from "../components/ui/card";
+import {CardHeader, CardTitle, CardDescription} from "../components/ui/card";
 import { useState } from 'react';
 import { Input } from "../components/ui/input";
 import '../App.css'; // Assuming your styles are defined in App.css

@@ -1,0 +1,20 @@
+Amazon Fashion, amazon.com
+Walmart, walmart.com
+Target, target.com
+Macy's, macys.com
+Nordstrom, nordstrom.com
+Zara, zara.com
+H&M, hm.com
+Gap, gap.com
+Uniqlo, uniqlo.com
+ASOS, asos.com
+Shein, shein.com
+Forever 21, forever21.com
+Lululemon, lululemon.com
+Nike, nike.com
+Adidas, adidas.com
+Urban Outfitters, urbanoutfitters.com
+Zalando, zalando.com
+Boohoo, boohoo.com
+Next, next.co.uk
+Topshop, topshop.com
