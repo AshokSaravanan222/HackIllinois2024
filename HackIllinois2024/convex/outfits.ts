@@ -24,17 +24,18 @@ export const listOutfits = query({
 
   // Function implementation.
   handler: async (ctx, args) => {
-    // Read the database as many times as you need here.
-    // See https://docs.convex.dev/database/reading-data.
+    // Read the database to get outfits.
     const outfits = await ctx.db.query("outfits").collect();
 
+    // Get outfits with image URLs.
     const outfitsWithImageURLs = await Promise.all(
       outfits.map(async (outfit) => ({
         ...outfit,
         imageUrl: await ctx.storage.getUrl(outfit.imageId),
       }))
     );
-
+    
     return outfitsWithImageURLs;
   },});
+
 
