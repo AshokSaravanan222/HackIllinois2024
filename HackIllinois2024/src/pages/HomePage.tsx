@@ -36,6 +36,7 @@ function HomePage() {
     "https://images.pexels.com/photos/632522/pexels-photo-632522.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     "https://images.pexels.com/photos/777059/pexels-photo-777059.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
   ];
+
   const [isLoading, setIsLoading] = useState(false); // Add this line
   const navigate = useNavigate();
 
@@ -89,73 +90,90 @@ function HomePage() {
   
   return (
 <div className="App">
-    <main className="container max-w-7xl mx-auto flex flex-col gap-8 p-4">
-      <h1 className="text-9xl font-bold my-8 text-center">styl</h1>
-      <header className="App-header mb-4">
-        <h2 className="text-2xl">Previous</h2>
-        <Carousel images={images} />
+<main className="container max-w-7xl mx-auto flex flex-col gap-8 p-4">
+      {/* Align 'styl' text to the right */}
+      <div className="w-full text-right">
+        <h1 className="text-9xl font-bold my-8 ">styl</h1>
+      </div>
+
+      <header className="flex flex-col text-left">
+        <p className="text-2xl font-bold my-8 ">our past designs</p>
       </header>
 
       {/* Display cards dynamically */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {outfits?.map((outfit, index) => (
-          <Link to={`/outfit/${outfit._id}`} key={index} className="overflow-hidden rounded-lg shadow-lg block text-current no-underline">
-            <div className="relative">
-              <div className="h-60 bg-cover bg-center" style={{ backgroundImage: `url(${outfit.imageUrl})` }}></div>
-              <div className="p-4 bg-white bg-opacity-75">
-                <CardHeader>
-                  <CardTitle>{outfit.occasion}</CardTitle>
-                  <CardDescription>{outfit.desc}</CardDescription>
-                </CardHeader>
-                <CardFooter>
-                  {/* Footer content */}
-                </CardFooter>
+          {outfits?.map((outfit, index) => (
+            <Link to={`/outfit/${outfit._id}`} key={index} className="overflow-hidden rounded-lg shadow-lg block text-current no-underline">
+              <div className="relative min-h-72"> {/* Increased minimum height */}
+                <div className="h-60 bg-cover bg-center" style={{ backgroundImage: `url(${outfit.imageUrl})` }}></div>
+                <div className="p-4 bg-white bg-opacity-75">
+                  <CardHeader>
+                    <CardTitle>{outfit.occasion}</CardTitle>
+                    <CardDescription>{outfit.desc}</CardDescription>
+                  </CardHeader>
+                  <CardFooter>
+                    {/* Footer content */}
+                  </CardFooter>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
+
+      <header className="flex flex-col text-center">
+        <p className="text-5xl font-bold my-8 ">create your styl</p>
+      </header>
+      <div>
+        <p className="text-2xl my-8 ">Use our quick and easy tool to find your next fit. Enter in some details and we will generate some images that can show you what it looks like.</p>
       </div>
 
       {/* Inputs and other content */}
-      <div className="flex flex-col gap-4">
-        {/* Your inputs and other components here */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* Larger input blocks for Occasion and Accessories */}
         <Input 
-        type="text" 
-        placeholder="Occasion Description:" 
-        value={occasion}
-        onChange={(e) => setOccasion(e.target.value)} 
-        className="text-input"
-      />
+          type="text" 
+          placeholder="Occassion" 
+          value={occasion}
+          onChange={(e) => setOccasion(e.target.value)} 
+          className="text-input md:col-span-1"
+        />
 
-      <Input 
-       type="text" 
-       placeholder="Accessories:" 
-       value={accessories}
-       onChange={(e) => setAccessories(e.target.value)} 
-       className="text-input"
-      />
+        <Input 
+          type="text" 
+          placeholder="Accessories" 
+          value={accessories}
+          onChange={(e) => setAccessories(e.target.value)} 
+          className="text-input md:col-span-1"
+        />
 
-      <Input 
-         type="text" 
-         placeholder="Gender:" 
-         value={gender}
-         onChange={(e) => setGender(e.target.value)} 
-         className="text-input"
-      />
+        {/* Cube-like, smaller input blocks for Gender and Budget */}
+        <div className="md:col-span-1 flex items-center">
+          <Input 
+            type="text" 
+            placeholder="Gender" 
+            value={gender}
+            onChange={(e) => setGender(e.target.value)} 
+            className="text-input w-full"
+          />
+        </div>
 
-      <Input 
-       type="text" 
-          placeholder="Budget:" 
-          value={budget}
-          onChange={(e) => setBudget(e.target.value)} 
-          className="text-input"
-      />
+        <div className="md:col-span-1 flex items-center">
+          <Input 
+            type="text" 
+            placeholder="Age" 
+            value={budget}
+            onChange={(e) => setBudget(e.target.value)} 
+            className="text-input w-full"
+          />
+        </div>
         {/* Repeat for other inputs */}
-        <FruitSelect />
-        <Button onClick={handleGenerateImage} disabled={isLoading}>{isLoading ? 'Generating...' : 'Generate Outfit'}</Button>
-        <Button onClick={() => goToOutfitPage("outfit1")}>{"Go to outfitid1"}</Button>
-        {isLoading && <div>Loading...</div>}
+        {/* <FruitSelect /> */}
+        {/* <Button onClick={() => goToOutfitPage("outfit1")}>{"Go to outfitid1"}</Button>
+        {isLoading && <div>Loading...</div>} */}
       </div>
+      <Button onClick={handleGenerateImage} disabled={isLoading} className="h-12">
+        {isLoading ? 'Generating...' : 'Generate Outfit'}
+      </Button>
     </main>
   </div>
   );

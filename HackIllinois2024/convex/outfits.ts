@@ -35,7 +35,15 @@ export const listOutfits = query({
       }))
     );
     
-    return outfitsWithImageURLs;
-  },});
+    // Shuffle the array of outfits with image URLs.
+    const shuffledOutfits = outfitsWithImageURLs.sort(() => 0.5 - Math.random());
+
+    // Determine the number of outfits to return based on args.count or the maximum available.
+    const count = Math.min(args.count, shuffledOutfits.length);
+
+    // Return a random selection of outfits based on the count.
+    return shuffledOutfits.slice(0, count);
+  },
+});
 
 
