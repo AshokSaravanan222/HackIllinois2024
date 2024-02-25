@@ -6,18 +6,7 @@ import { useState } from 'react';
 import { Input } from "../components/ui/input";
 import '../App.css'; // Assuming your styles are defined in App.css
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 import { Id } from "convex/_generated/dataModel";
-
-// import {
-//   Select,
-//   SelectTrigger,
-//   SelectValue,
-//   SelectContent,
-//   SelectItem,
-//   SelectGroup,
-//   SelectLabel,
-// } from '../components/ui/select'; // Update the path accordingly
 
 function HomePage() {
   const outfits = useQuery(api.outfits.listOutfits, { count: 3 });
@@ -48,28 +37,6 @@ function HomePage() {
     }
   };
 
-  // const FruitSelect: React.FC = () => {
-  //   const [value, setValue] = React.useState('');
-  
-  //   return (
-  //     <Select onValueChange={setValue}>
-  //       <SelectTrigger aria-label="Fruit">
-  //         <SelectValue placeholder="Select a fruit" />
-  //       </SelectTrigger>
-  //       <SelectContent>
-  //           <SelectGroup>
-  //             <SelectLabel>Fruits</SelectLabel>
-  //             <SelectItem value="apple">Apple</SelectItem>
-  //             <SelectItem value="banana">Banana</SelectItem>
-  //             <SelectItem value="orange">Orange</SelectItem>
-  //             <SelectItem value="mango">Mango</SelectItem>
-  //           </SelectGroup>
-  //       </SelectContent>
-  //     </Select>
-  //   );
-  // };
-
-
   const handleGenerateImage = async () => {
     setIsLoading(true); // Start loading
     try {
@@ -88,8 +55,8 @@ function HomePage() {
   };
   
   return (
-<div className="App">
-<main className="container max-w-7xl mx-auto flex flex-col gap-8 p-4">
+    <div className="App">
+    <main className="container max-w-7xl mx-auto flex flex-col gap-8 p-4">
       {/* Align 'styl' text to the right */}
       <div className="w-full text-right relative overflow-hidden">
       {/* Hollow circle behind the text */}
@@ -108,7 +75,10 @@ function HomePage() {
       {/* Display cards dynamically */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {outfits?.map((outfit, index) => (
-            <Link to={`/outfit/${outfit._id}`} key={index} className="overflow-hidden rounded-lg shadow-lg block text-current no-underline">
+          <div 
+            key={index} 
+            className="overflow-hidden rounded-lg shadow-lg block text-current no-underline cursor-pointer"
+            onClick={() => goToOutfitPage(outfit._id)}>
               <div className="relative min-h-72"> {/* Increased minimum height */}
                 <div className="h-96 bg-cover bg-center" style={{ backgroundImage: `url(${outfit.imageUrl})` }}></div>
                 <div className="bg-white bg-opacity-75">
@@ -118,7 +88,7 @@ function HomePage() {
                   </CardHeader>
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
 
@@ -169,10 +139,6 @@ function HomePage() {
             numeric={true} // Assuming this prop is being handled as described in your previous message
           />
         </div>
-        {/* Repeat for other inputs */}
-        {/* <FruitSelect /> */}
-        {/* <Button onClick={() => goToOutfitPage("outfit1")}>{"Go to outfitid1"}</Button>
-        {isLoading && <div>Loading...</div>} */}
       </div>
       <Button onClick={handleGenerateImage} disabled={isLoading} className="h-12">
         {isLoading ? 'Generating...' : 'Generate Outfit'}

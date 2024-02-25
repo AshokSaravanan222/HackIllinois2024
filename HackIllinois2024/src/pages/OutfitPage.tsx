@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogClose,
 } from '../components/ui/dialog'; // Adjust the import path according to your project structure
-import Exa from "exa-js";
+import Exa, { SearchResponse, SearchResult } from "exa-js";
 
 
 const OutfitPage: React.FC = () => {
@@ -22,9 +22,9 @@ const OutfitPage: React.FC = () => {
   const [isLoadingText, setIsLoadingText] = useState(false);
   const [isLoadingImage, setIsLoadingImage] = useState(true);
   const [image, setImage] = useState<string | null>(null);
-  const exa = new Exa(process.env.EXA_API_KEY);
+  const exa = new Exa("542b09d5-db6d-4e5a-964e-e42a38603cf2");
   const [isOpen, setIsOpen] = useState(false); // State to track the modal open status
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[] | null>(null);
 
   // Example function to extract domains from the file
   const extractDomains = (): string[] => {
@@ -34,23 +34,23 @@ const OutfitPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isOpen) {
-      const fetchSearchResults = async () => {
-        const domains = extractDomains(); // Call the function to extract domains from the file
+    const fetchSearchResults = async () => {
+      if (isOpen && text) {
+        const domains = extractDomains();
         try {
-          const response = await exa.search(text, {
+          const response: SearchResponse = await exa.search(text, {
             numResults: 5,
             includeDomains: domains,
           });
-          setSearchResults(response); // Assuming 'response' is the array of search results
+          setSearchResults(response.results);
         } catch (error) {
           console.error("Failed to fetch search results:", error);
         }
-      };
+      }
+    };
 
-      fetchSearchResults();
-    }
-  }, [isOpen, text]); // Depend on isOpen and text state
+    fetchSearchResults();
+  }, [isOpen, text]);
 
   useEffect(() => {
     if (imgUrl) {
@@ -88,28 +88,48 @@ const OutfitPage: React.FC = () => {
 
   return (
     <div>
-      {/* Your existing component return code */}
-      {/* Modify the Dialog component to include search results */}
-      {splitAndTrimString(text).map((text, index) => (
-        <Dialog key={index} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <p className="text-3xl my-3 cursor-pointer">{text}</p>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogTitle>Outfit Detail</DialogTitle>
-            <DialogDescription>
-              This outfit includes {text}.
-              {/* Display search results here */}
-              <ul className="list-disc pl-5">
-                {searchResults.map((result, index) => (
-                  <li key={index}>{result.title} - {result.url}</li> // Adjust according to your actual result structure
+      {isLoadingImage ? (
+        <p>Getting your image</p>
+      ) : (
+        <div className="h-screen flex">
+          <div className="flex-grow flex items-center justify-center p-4" style={{ maxWidth: '85%' }}>
+          <div className="text-2xl">
+            {/* Adjusted for bold and moved up */}
+            {isLoadingText ? (
+                <p className="text-lg font-semibold">Finding your style...</p>
+            ) : (
+              <div>
+                <h2 className="font-bold mb-3 text-3xl" style={{ marginBottom: '1.5rem' }}>You would look stylish wearing a:</h2>
+                {/* Modify the Dialog component to include search results */}
+                {splitAndTrimString(text).map((text, index) => (
+                  <Dialog key={index} onOpenChange={setIsOpen}>
+                    <DialogTrigger asChild>
+                      <p className="text-3xl my-3 cursor-pointer">{text}</p>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogTitle>Outfit Detail</DialogTitle>
+                      <DialogDescription>
+                        This outfit includes {text}.
+                        {/* Display search results here */}
+                        <ul className="list-disc pl-5">
+                          {searchResults?.map((result, index) => (
+                            <li key={index}>{result.title} - {result.url}</li> // Adjust according to your actual result structure
+                          ))}
+                        </ul>
+                      </DialogDescription>
+                      <DialogClose className="close-button-styles">Close</DialogClose>
+                    </DialogContent>
+                  </Dialog>
                 ))}
-              </ul>
-            </DialogDescription>
-            <DialogClose className="close-button-styles">Close</DialogClose>
-          </DialogContent>
-        </Dialog>
-      ))}
+              </div>
+            )}
+
+          </div>
+        </div>
+        <img src={image!} alt="Outfit" className="object-contain self-center rounded-lg" style={{ maxHeight: '70%', marginTop: '10%', marginBottom: '10%', marginRight: '20%' }} />
+      </div>
+      )}
+      
     </div>
   );
 };

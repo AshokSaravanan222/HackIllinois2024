@@ -41,7 +41,6 @@ export const sendDallEOutfit = action({
         n: 1,
         quality: "standard",
         response_format: "url",
-        size: "256x256", 
       });
       console.log(response);
       const dallEImageUrl = response.data[0]["url"]!;
