@@ -32,7 +32,7 @@ export const getOutfitImageLink = query({
   },
 });
 
-export const hasOutfitDesc = query({
+export const getOutfitDesc = query({
   // Validators for arguments.
   args: {
     outfitId: v.id("outfits")
@@ -40,7 +40,7 @@ export const hasOutfitDesc = query({
   // Function implementation.
   handler: async (ctx, args) => {
     const outfit = await ctx.db.get(args.outfitId);
-    return outfit?.gptDesc == null
+    return outfit?.gptDesc
   },
 });
 

@@ -17,14 +17,18 @@ const OutfitPage: React.FC = () => {
   const location = useLocation();
   const { outfitId } = location.state || {};
   const imgUrl = useQuery(api.outfits.getOutfitImageLink, { outfitId: outfitId });
+  const outfitDesc = useQuery(api.outfits.getOutfitDesc, { outfitId: outfitId });
+
   const sendChatOutfit = useAction(api.openai.sendChatOutfit);
   const [text, setText] = useState(" ");
   const [isLoadingText, setIsLoadingText] = useState(false);
   const [isLoadingImage, setIsLoadingImage] = useState(true);
   const [image, setImage] = useState<string | null>(null);
+
   const exa = new Exa("542b09d5-db6d-4e5a-964e-e42a38603cf2");
   const [isOpen, setIsOpen] = useState(false); // State to track the modal open status
   const [searchResults, setSearchResults] = useState<SearchResult[] | null>(null);
+  
 
   // Example function to extract domains from the file
   const extractDomains = (): string[] => {
@@ -56,7 +60,12 @@ const OutfitPage: React.FC = () => {
     if (imgUrl) {
       setImage(imgUrl);
       setIsLoadingImage(false);
-      handleGenerateText();
+      if (outfitDesc) {
+        setText(outfitDesc);
+      } else {
+        handleGenerateText();
+      }
+      
     }
   }, [imgUrl]);
 
