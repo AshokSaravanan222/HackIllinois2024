@@ -1,7 +1,7 @@
 import { useQuery, useAction } from "convex/react";
 import { api} from "../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
-import {CardHeader, CardTitle, CardDescription} from "../components/ui/card";
+import {CardHeader, CardFooter, CardTitle, CardDescription} from "../components/ui/card";
 import { useState } from 'react';
 import { Input } from "../components/ui/input";
 import '../App.css'; // Assuming your styles are defined in App.css
@@ -91,9 +91,15 @@ function HomePage() {
 <div className="App">
 <main className="container max-w-7xl mx-auto flex flex-col gap-8 p-4">
       {/* Align 'styl' text to the right */}
-      <div className="w-full text-right">
-        <h1 className="text-9xl font-bold my-8 ">styl</h1>
+      <div className="w-full text-right relative overflow-hidden">
+      {/* Hollow circle behind the text */}
+      <div className="absolute right-10 top-1/2 transform -translate-y-1/2 -translate-x-1/4 w-40 h-40 border-4 border-blue-400 rounded-full z-0"></div>
+      
+      {/* Text with stylized appearance */}
+        <h1 className="text-9xl font-bold my-8 relative z-10 inline-block">styl</h1>
       </div>
+
+
 
       <header className="flex flex-col text-left">
         <p className="text-2xl font-bold my-8 ">our past designs</p>

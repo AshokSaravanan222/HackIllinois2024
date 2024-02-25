@@ -80,17 +80,12 @@ export const sendDallEOutfit = action({
 });
 
 export const sendChatOutfit = action({
-
   args: {
     outfitId: v.id("outfits"),
+    imgUrl: v.string(),
   },
 
   handler: async (ctx, args) => {
-
-    const imgUrl = await ctx.runQuery(api.outfits.getOutfitImageLink, {
-      outfitId: args.outfitId,
-    });
-
     try {
       const apiKey = process.env.OPENAI_API_KEY;
       if (!apiKey) {
@@ -107,11 +102,11 @@ export const sendChatOutfit = action({
           {
             "role": "user",
             "content": [
-              {"type": "text", "text": "Describe this image."},
+              {"type": "text", "text": "Desribe only each article of clothing in 8 words or less, seperating each one by a period."},
               {
                 "type": "image_url",
                 "image_url": {
-                  "url": imgUrl!, // if this is not valid we have to convert to b64
+                  "url": args.imgUrl, // if this is not valid we have to convert to b64
                 },
               },
             ],
@@ -121,13 +116,16 @@ export const sendChatOutfit = action({
       });
       console.log(response);
       const responseText = response.choices[0].message.content;
+      console.log(responseText);
 
-      await ctx.runMutation(internal.outfits.sendChatOutfit, {
-        id: args.outfitId,
-        text: responseText
-      });
+      const input = {
+        outfitId: args.outfitId,
+        text: responseText!
+      }
+      
+      const { gptDesc } = (await ctx.runMutation(internal.outfits.sendChatOutfit, input) as {gptDesc: string});
+      return gptDesc;
 
-      return responseText
       // Use the response here, for example, save the image URL
     } catch (error) {
       console.error("Failed to generate image:", error);

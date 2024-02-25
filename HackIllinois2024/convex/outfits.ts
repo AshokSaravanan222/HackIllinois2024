@@ -5,17 +5,18 @@ import { Id } from "./_generated/dataModel";
 
 export const sendDallEOutfit = internalMutation(
   async (ctx, { imageId , age , accessories, gender, occasion }) => {
-    const outfit = { imageId: (imageId as Id<"_storage">), age: (age as number), accessories: (accessories as string) , gender: (gender as string), occasion: (occasion as string) };
+    const outfit = { imageId: (imageId as Id<"_storage">), age: (age as number), accessories: (accessories as string) , gender: (gender as string), occasion: (occasion as string), gptDesc: ""};
     const id = await ctx.db.insert("outfits", outfit);
     return { id }
   }
 );
 
 export const sendChatOutfit = internalMutation(
-  async (ctx, {outputId, text}) => {
-    const id = {outputId: (outputId as Id<"outfits">)}
-    const gptText = {gptDesc: (text as string)}
-    return await ctx.db.patch(id.outputId, { gptDesc: gptText.gptDesc });
+  async (ctx, {outfitId, text}) => {
+    const outfitIdJSON = {id: (outfitId as Id<"outfits">) }
+    const value = {gptDesc: (text as string)};
+    await ctx.db.patch(outfitIdJSON.id, value);
+    return value;
   }
 );
 
