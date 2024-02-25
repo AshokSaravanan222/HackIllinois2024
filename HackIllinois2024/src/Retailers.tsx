@@ -45,17 +45,6 @@ const RetailerCard: React.FC<{ retailer: typeof retailers[0]; query: string }> =
   );
 };
 
-// Main component to display all retailers
-const Retailers: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
-  return (
-    <div className="flex flex-wrap justify-center">
-      {retailers.map((retailer, index) => (
-        <RetailerCard key={index} retailer={retailer} query={searchQuery} />
-      ))}
-    </div>
-  );
-};
-
 const RetailersDisplay: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
     const [randomRetailers, setRandomRetailers] = useState<typeof retailers>([]);
   

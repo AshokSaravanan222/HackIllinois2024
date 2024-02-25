@@ -13,7 +13,6 @@ import {
 // import Exa, { SearchResponse, SearchResult } from "exa-js";
 import { ArrowLeftIcon } from '@radix-ui/react-icons';
 import RetailersDisplay from '@/Retailers';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 
 const OutfitPage: React.FC = () => {
