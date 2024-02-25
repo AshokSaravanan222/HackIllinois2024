@@ -1,6 +1,5 @@
 "use node";
 import OpenAI from "openai";
-import { ChatCompletion, ImagesResponse } from "openai/resources";
 import { action } from "./_generated/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
@@ -36,7 +35,7 @@ export const sendDallEOutfit = action({
       }
 
 
-      const response: ImagesResponse = await openai.images.generate({
+      const response = await openai.images.generate({
         prompt: prompt,
         model: "dall-e-2",
         n: 1,
@@ -95,7 +94,7 @@ export const sendChatOutfit = action({
       }
       const openai = new OpenAI({ apiKey });
 
-      const response: ChatCompletion = await openai.chat.completions.create({
+      const response = await openai.chat.completions.create({
         "model" : "gpt-4-vision-preview",
         "messages": [
           {
