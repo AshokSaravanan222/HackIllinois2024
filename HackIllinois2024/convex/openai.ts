@@ -3,8 +3,7 @@ import OpenAI from "openai";
 import { ChatCompletion, ImagesResponse } from "openai/resources";
 import { action } from "./_generated/server";
 import { v } from "convex/values";
-import { api, internal } from "./_generated/api";
-import { Component, useState } from "react";
+import { internal } from "./_generated/api";
 import { Id } from "./_generated/dataModel";
 
 export const sendDallEOutfit = action({
