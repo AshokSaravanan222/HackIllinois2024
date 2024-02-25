@@ -73,7 +73,7 @@ const OutfitPage: React.FC = () => {
       } else {
         handleGenerateText();
       }
-      
+      console.log(isOpen);
     }
   }, [imgUrl]);
 
