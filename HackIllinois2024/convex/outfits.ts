@@ -6,15 +6,31 @@ import { Id } from "./_generated/dataModel";
 export const sendDallEOutfit = internalMutation(
   async (ctx, { imageId , age , accessories, gender, occasion }) => {
     const outfit = { imageId: (imageId as Id<"_storage">), age: (age as number), accessories: (accessories as string) , gender: (gender as string), occasion: (occasion as string) };
-    await ctx.db.insert("outfits", outfit);
+    const id = await ctx.db.insert("outfits", outfit);
+    return { id }
   }
 );
 
 export const sendChatOutfit = internalMutation(
   async (ctx, {outputId, text}) => {
-    // update the id of the existing document, with the output id
+    const id = {outputId: (outputId as Id<"outfits">)}
+    const gptText = {gptDesc: (text as string)}
+    return await ctx.db.patch(id.outputId, { gptDesc: gptText.gptDesc });
   }
 );
+
+export const getOutfitImageLink = query({
+  // Validators for arguments.
+  args: {
+    outfitId: v.id("outfits")
+  },
+  // Function implementation.
+  handler: async (ctx, args) => {
+    const outfit = await ctx.db.get(args.outfitId);
+    return ctx.storage.getUrl(outfit!.imageId);
+  },
+});
+
 
 export const listOutfits = query({
   // Validators for arguments.

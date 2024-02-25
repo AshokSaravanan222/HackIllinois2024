@@ -3,7 +3,7 @@ import OpenAI from "openai";
 import { ChatCompletion, ImagesResponse } from "openai/resources";
 import { action } from "./_generated/server";
 import { v } from "convex/values";
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { Component, useState } from "react";
 import { Id } from "./_generated/dataModel";
 
@@ -25,7 +25,7 @@ export const sendDallEOutfit = action({
       }
       const openai = new OpenAI({ apiKey });
 
-      const prompt = `I want an image of an entire college ${args.gender}, but I only them to appear in the image once. I want the image to depict what this person might wear for a ${args.occasion}, with the following accessor: ${args.accessories}, and I do not want the individual clothing items to appear in the image.`
+      const prompt = `Generate a vertical image of a ${args.age}-year college ${args.gender}, who wants to wear, ${args.accessories} to a ${args.occasion}, where the image only includes one person.`
 
       // Check if the prompt is offensive.
       const modResponse = await openai.moderations.create({"input": prompt});
@@ -43,7 +43,7 @@ export const sendDallEOutfit = action({
         n: 1,
         quality: "standard",
         response_format: "url",
-        size: "256x256"
+        size: "256x256", 
       });
       console.log(response);
       const dallEImageUrl = response.data[0]["url"]!;
@@ -58,17 +58,19 @@ export const sendDallEOutfit = action({
       const image = await imageResponse.blob();
       // TODO update storage.store to accept whatever kind of Blob is returned from node-fetch
       const storageId = await ctx.storage.store(image as Blob);
-
-      // Write storageId as the body of the message to the Convex database.
-      await ctx.runMutation(internal.outfits.sendDallEOutfit, {
+      
+      // defining outfit object
+      const outfit = {
         imageId: storageId,
         age: args.age,
         accessories: args.accessories,
         gender: args.gender,
         occasion: args.occasion
-      });
+      }
 
-      return storageId
+      // Write storageId as the body of the message to the Convex database.
+      const { id } = (await ctx.runMutation(internal.outfits.sendDallEOutfit, outfit) as {id: Id<"outfits">});
+      return id;
       // Use the response here, for example, save the image URL
     } catch (error) {
       console.error("Failed to generate image:", error);
@@ -80,11 +82,15 @@ export const sendDallEOutfit = action({
 export const sendChatOutfit = action({
 
   args: {
-    outfitId: v.string(),
-    imgUrl: v.string(),
+    outfitId: v.id("outfits"),
   },
 
   handler: async (ctx, args) => {
+
+    const imgUrl = await ctx.runQuery(api.outfits.getOutfitImageLink, {
+      outfitId: args.outfitId,
+    });
+
     try {
       const apiKey = process.env.OPENAI_API_KEY;
       if (!apiKey) {
@@ -105,7 +111,7 @@ export const sendChatOutfit = action({
               {
                 "type": "image_url",
                 "image_url": {
-                  "url": args.imgUrl,
+                  "url": imgUrl!, // if this is not valid we have to convert to b64
                 },
               },
             ],

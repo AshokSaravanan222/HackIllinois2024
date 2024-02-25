@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation} from 'react-router-dom';
 import image from "./Outfit1.png";
 import { api } from "../../convex/_generated/api";
 import { useAction } from "convex/react";
@@ -7,7 +7,10 @@ import { Id } from 'convex/_generated/dataModel';
 import { Button } from "@/components/ui/button";
 
 const OutfitPage: React.FC = () => {
-  const { outfitId } = useParams<{ outfitId: string }>();
+  const location = useLocation();
+  const { outfitId } = location.state || {};
+
+  const getImageLink = useAction(api.outfits.getOutfitImageLink);
   const sendChatOutfit = useAction(api.openai.sendChatOutfit);
   const [text, setText] = useState(" ");
   const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +19,9 @@ const OutfitPage: React.FC = () => {
   const handleGenerateText = async () => {
     setIsLoading(true);
     try {
-      const generatedText = await sendChatOutfit({ imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg", outfitId: outfitId as string });
+
+
+      const generatedText = await sendChatOutfit({ imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg", outfitId: outfitId});
       setText(generatedText);
     } catch (error) {
       console.error("Failed to get text:", error);

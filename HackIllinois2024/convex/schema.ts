@@ -8,5 +8,6 @@ export default defineSchema({
     accessories: v.string(),
     gender: v.string(),
     occasion: v.string(),
+    gptDesc: v.optional(v.string()),
   },)
 });

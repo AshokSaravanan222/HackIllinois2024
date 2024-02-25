@@ -1,23 +1,23 @@
 import { useQuery, useAction } from "convex/react";
-import { api, internal } from "../../convex/_generated/api";
+import { api} from "../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from "../components/ui/card";
-import React, { useState } from 'react';
+import {CardHeader, CardTitle, CardDescription} from "../components/ui/card";
+import { useState } from 'react';
 import { Input } from "../components/ui/input";
 import '../App.css'; // Assuming your styles are defined in App.css
-import Carousel from "../Carousel";
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { Id } from "convex/_generated/dataModel";
 
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-  SelectGroup,
-  SelectLabel,
-} from '../components/ui/select'; // Update the path accordingly
+// import {
+//   Select,
+//   SelectTrigger,
+//   SelectValue,
+//   SelectContent,
+//   SelectItem,
+//   SelectGroup,
+//   SelectLabel,
+// } from '../components/ui/select'; // Update the path accordingly
 
 function HomePage() {
   const outfits = useQuery(api.outfits.listOutfits, { count: 3 });
@@ -26,64 +26,63 @@ function HomePage() {
   const [occasion, setOccasion] = useState('');
   const [accessories, setAccessories] = useState('');
   const [gender, setGender] = useState('');
-  const [budget, setBudget] = useState('');
-
-  const images = [
-    "https://images.pexels.com/photos/169647/pexels-photo-169647.jpeg?auto=compress&cs=tinysrgb&w=600",
-    "https://images.pexels.com/photos/313782/pexels-photo-313782.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    "https://images.pexels.com/photos/773471/pexels-photo-773471.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    "https://images.pexels.com/photos/672532/pexels-photo-672532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    "https://images.pexels.com/photos/632522/pexels-photo-632522.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    "https://images.pexels.com/photos/777059/pexels-photo-777059.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-  ];
+  const [age, setAge] = useState<number | null>(null);
 
   const [isLoading, setIsLoading] = useState(false); // Add this line
   const navigate = useNavigate();
 
   // Function to handle navigation
-  const goToOutfitPage = (outfitId: string) => {
-    navigate(`/outfit/${outfitId}`);
+  const goToOutfitPage = (outfitId: Id<"outfits">) => {
+    navigate(`/outfit/${(outfitId as string)}`, { state: { outfitId } });
   };
 
-  const FruitSelect: React.FC = () => {
-    const [value, setValue] = React.useState('');
+  const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.valueAsNumber;
+
+    // Check if the newValue is NaN (not a number) or negative
+    if (!isNaN(newValue) && newValue >= 0) {
+      setAge(newValue);
+    } else {
+      // Reset to null if the input is invalid (or implement any other desired behavior)
+      setAge(null);
+    }
+  };
+
+  // const FruitSelect: React.FC = () => {
+  //   const [value, setValue] = React.useState('');
   
-    return (
-      <Select onValueChange={setValue}>
-        <SelectTrigger aria-label="Fruit">
-          <SelectValue placeholder="Select a fruit" />
-        </SelectTrigger>
-        <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Fruits</SelectLabel>
-              <SelectItem value="apple">Apple</SelectItem>
-              <SelectItem value="banana">Banana</SelectItem>
-              <SelectItem value="orange">Orange</SelectItem>
-              <SelectItem value="mango">Mango</SelectItem>
-            </SelectGroup>
-        </SelectContent>
-      </Select>
-
-
-    );
-  };
+  //   return (
+  //     <Select onValueChange={setValue}>
+  //       <SelectTrigger aria-label="Fruit">
+  //         <SelectValue placeholder="Select a fruit" />
+  //       </SelectTrigger>
+  //       <SelectContent>
+  //           <SelectGroup>
+  //             <SelectLabel>Fruits</SelectLabel>
+  //             <SelectItem value="apple">Apple</SelectItem>
+  //             <SelectItem value="banana">Banana</SelectItem>
+  //             <SelectItem value="orange">Orange</SelectItem>
+  //             <SelectItem value="mango">Mango</SelectItem>
+  //           </SelectGroup>
+  //       </SelectContent>
+  //     </Select>
+  //   );
+  // };
 
 
   const handleGenerateImage = async () => {
     setIsLoading(true); // Start loading
     try {
-      const storageId = await sendDallEOutfit({ age: 17, accessories: accessories, gender: gender, occasion: occasion});
-
-      setOccasion('');
-      setAccessories('');
-      setGender('');
-      setBudget(''); // Reset the budget input after generating the image
-    
-      goToOutfitPage('outfitid1')
+      const id = await sendDallEOutfit({ age: (age as number), accessories: accessories, gender: gender, occasion: occasion});
+      goToOutfitPage(id!)
       
     } catch (error) {
       console.error("Failed to generate image:", error);
     } finally {
+      setOccasion('');
+      setAccessories('');
+      setGender('');
+      setAge(null);
       setIsLoading(false); // Stop loading whether it's successful or fails
     }
   };
@@ -105,15 +104,12 @@ function HomePage() {
           {outfits?.map((outfit, index) => (
             <Link to={`/outfit/${outfit._id}`} key={index} className="overflow-hidden rounded-lg shadow-lg block text-current no-underline">
               <div className="relative min-h-72"> {/* Increased minimum height */}
-                <div className="h-60 bg-cover bg-center" style={{ backgroundImage: `url(${outfit.imageUrl})` }}></div>
-                <div className="p-4 bg-white bg-opacity-75">
+                <div className="h-96 bg-cover bg-center" style={{ backgroundImage: `url(${outfit.imageUrl})` }}></div>
+                <div className="bg-white bg-opacity-75">
                   <CardHeader>
                     <CardTitle>{outfit.occasion}</CardTitle>
                     <CardDescription>{outfit.accessories}</CardDescription>
                   </CardHeader>
-                  <CardFooter>
-                    {/* Footer content */}
-                  </CardFooter>
                 </div>
               </div>
             </Link>
@@ -161,9 +157,10 @@ function HomePage() {
           <Input 
             type="text" 
             placeholder="Age" 
-            value={budget}
-            onChange={(e) => setBudget(e.target.value)} 
+            value={age === null ? '' : age.toString()} // Convert age to string, handle null
+            onChange={handleAgeChange} 
             className="text-input w-full"
+            numeric={true} // Assuming this prop is being handled as described in your previous message
           />
         </div>
         {/* Repeat for other inputs */}
